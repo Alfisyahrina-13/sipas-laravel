@@ -1,59 +1,114 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SIPAS - Sistem Informasi Pengelolaan Sampah dan Penentuan Prioritas Pengangkutan
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi web berbasis **Laravel** dan **MySQL** yang menentukan urutan prioritas pengangkutan sampah di tiap lokasi/TPS memakai metode **Simple Additive Weighting (SAW)**.
 
-## About Laravel
+## Anggota Kelompok
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+| Nama | NIM | Akun GitHub | Tugas |
+|---|---|---|---|
+| (isi) | (isi) | @(isi) | Setup project, autentikasi, role, layout |
+| (isi) | (isi) | @(isi) | CRUD Lokasi dan Armada |
+| (isi) | (isi) | @(isi) | CRUD Kriteria dan Data Sampah |
+| (isi) | (isi) | @(isi) | SawService, halaman ranking, penugasan, pengujian |
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Link repository:** https://github.com/(isi)/(isi)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Fitur
 
-## Learning Laravel
+- Login dengan dua peran: **Admin** (semua fitur) dan **Petugas** (data sampah, perhitungan SAW, penugasan).
+- CRUD: Lokasi/TPS, Armada, Kriteria dan bobot, Data kondisi sampah, Penugasan pengangkutan.
+- Perhitungan SAW otomatis dengan **langkah lengkap** (kriteria, matriks X, normalisasi R, nilai V, ranking).
+- Validasi: total bobot kriteria harus tepat 1 sebelum SAW berjalan.
+- Simpan hasil ranking harian (riwayat), tombol "Jadwalkan Angkut" langsung dari ranking.
+- Penugasan berstatus **Selesai** mereset hitungan "hari sejak terakhir diangkut".
+- Dashboard ringkasan dan 5 prioritas teratas.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Metode SAW
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| Kode | Kriteria | Tipe | Bobot |
+|---|---|---|---:|
+| C1 | Volume sampah (kg) | Benefit | 0,35 |
+| C2 | Jarak ke TPA (km) | Cost | 0,15 |
+| C3 | Hari sejak terakhir diangkut | Benefit | 0,30 |
+| C4 | Kepadatan penduduk sekitar | Benefit | 0,20 |
 
-## Laravel Sponsors
+1. Matriks keputusan X dari data terbaru tiap lokasi.
+2. Normalisasi: benefit `r = x / max(x)`, cost `r = min(x) / x`.
+3. Nilai preferensi `V = Σ (w × r)`.
+4. Urutkan V terbesar ke terkecil: peringkat 1 = diangkut paling dulu.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+**Contoh (data seeder):**
 
-### Premium Partners
+| Lokasi | Volume | Jarak | Hari | Penduduk | V | Rank |
+|---|---:|---:|---:|---:|---:|---:|
+| TPS Lampineung | 500 | 10 | 5 | 3000 | 0,7593 | 1 |
+| TPS Ulee Kareng | 400 | 8 | 7 | 2000 | 0,7538 | 2 |
+| TPS Peunayong | 300 | 5 | 3 | 5000 | 0,6886 | 3 |
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Logika SAW ada di `app/Services/SawService.php` (fungsi `proses()` murni tanpa database, diuji di `tests/Unit/SawServiceTest.php`).
 
-## Contributing
+## Rancangan Database
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+`users` (+role) · `locations` · `vehicles` · `criterias` · `waste_records` · `pickups` · `saw_results`
 
-## Code of Conduct
+Relasi: `locations` 1-N `waste_records`, `locations` 1-N `pickups`, `vehicles` 1-N `pickups`, `locations` 1-N `saw_results`, `users` 1-N `waste_records`/`pickups`.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Instalasi
 
-## Security Vulnerabilities
+Prasyarat: PHP 8.2+, Composer, MySQL, Git.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+# 1. Buat project Laravel baru (11 atau 12), lalu salin file SIPAS
+composer create-project laravel/laravel sipas
+./install.sh ../sipas          # atau salin folder app, database, resources, routes, tests secara manual
+cd ../sipas
 
-## License
+# 2. Buat database di MySQL
+mysql -u root -e "CREATE DATABASE sipas CHARACTER SET utf8mb4;"
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# 3. Atur .env
+#    DB_CONNECTION=mysql
+#    DB_HOST=127.0.0.1
+#    DB_PORT=3306
+#    DB_DATABASE=sipas
+#    DB_USERNAME=root
+#    DB_PASSWORD=
+
+# 4. Migrasi dan data contoh
+php artisan migrate:fresh --seed
+
+# 5. Jalankan
+php artisan serve
+```
+
+Buka http://127.0.0.1:8000
+
+| Peran | Email | Password |
+|---|---|---|
+| Admin | admin@sipas.test | password |
+| Petugas | petugas@sipas.test | password |
+
+Jalankan pengujian: `php artisan test`
+
+## Skenario Demo
+
+1. Login sebagai admin, lihat **Kriteria** (total bobot = 1).
+2. Buka **Perhitungan SAW**: tunjukkan langkah 1-4 dan ranking, cocokkan dengan hitungan manual.
+3. Ubah satu bobot sehingga total ≠ 1, SAW menolak berjalan.
+4. Login petugas, input **Data Sampah** baru, ranking berubah.
+5. Klik **Jadwalkan Angkut** pada peringkat 1, ubah status ke **Selesai**, lihat nilai hari C3 kembali ke 0 dan ranking berubah.
+
+## Alur Kerja GitHub
+
+- Satu repository kelompok, semua anggota ditambahkan sebagai *collaborator*.
+- Tiap anggota bekerja di branch sendiri (`feature/...`) dengan akun masing-masing, lalu Pull Request ke `main`.
+- Pesan commit jelas: `feat: tambah CRUD lokasi`, `fix: validasi bobot`, `docs: update README`.
+- Commit berkala, bukan satu commit besar di akhir.
+
+## Screenshot
+
+(Tempel screenshot: login, dashboard, halaman SAW, CRUD, penugasan)
+
+## Kesimpulan
+
+SAW membuat penentuan prioritas pengangkutan menjadi objektif dan transparan karena setiap lokasi dinilai dari beberapa kriteria berbobot. Bobot dapat diubah admin tanpa mengubah kode.
