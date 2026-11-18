@@ -6,13 +6,13 @@ Aplikasi web berbasis **Laravel** dan **MySQL** yang menentukan urutan prioritas
 
 | Nama | NIM | Akun GitHub | Tugas |
 |---|---|---|---|
-| (isi) | (isi) | @(isi) | Setup project, autentikasi, role, layout |
-| (isi) | (isi) | @(isi) | CRUD Lokasi dan Armada |
-| (isi) | (isi) | @(isi) | CRUD Kriteria dan Data Sampah |
-| (isi) | (isi) | @(isi) | SawService, halaman ranking, penugasan, pengujian |
-| Muhammad Hafidz | (NIM Anda) | @(username GitHub Anda) | SawService, halaman ranking, unit test |
+| Alfisyahrina | 24105111003 | https://github.com/Alfisyahrina-13 | Setup project, autentikasi, role, layout |
+| Miftahul Jannah | 24105111018 | https://github.com/miftahuljannah2006asia-png | CRUD Lokasi dan Armada |
+| Farah Nadhira | 24105111008 | https://github.com/fnadhira44-ui | CRUD Kriteria dan Data Sampah |
+| Muhammad Andra Andhika | 24105111004 | https://github.com/astecu402-sketch | SawService, halaman ranking, penugasan, pengujian |
+| Muhammad Hafidz | 24105111134 | https://github.com/muhammadhafiz190606-arch | Fitur perhitungan dan SAW dan rangking |
 
-**Link repository:** https://github.com/(isi)/(isi)
+**Link repository:** https://github.com/Alfisyahrina-13/sipas-laravel
 
 ## Fitur
 
