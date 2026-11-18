@@ -54,42 +54,37 @@ Logika SAW ada di `app/Services/SawService.php` (fungsi `proses()` murni tanpa d
 
 Relasi: `locations` 1-N `waste_records`, `locations` 1-N `pickups`, `vehicles` 1-N `pickups`, `locations` 1-N `saw_results`, `users` 1-N `waste_records`/`pickups`.
 
-## Instalasi
+## Cara Menjalankan
 
-Prasyarat: PHP 8.2+, Composer, MySQL, Git.
+Prasyarat: PHP 8.2+, Composer, MySQL (XAMPP), Git.
 
-```bash
-# 1. Buat project Laravel baru (11 atau 12), lalu salin file SIPAS
-composer create-project laravel/laravel sipas
-./install.sh ../sipas          # atau salin folder app, database, resources, routes, tests secara manual
-cd ../sipas
+```
+git clone https://github.com/Alfisyahrina-13/sipas-laravel.git
+cd sipas-laravel
+composer install
+copy .env.example .env
+php artisan key:generate
+```
 
-# 2. Buat database di MySQL
-mysql -u root -e "CREATE DATABASE sipas CHARACTER SET utf8mb4;"
+Buat database kosong bernama `sipas` di phpMyAdmin, lalu ubah `.env`:
 
-# 3. Atur .env
-#    DB_CONNECTION=mysql
-#    DB_HOST=127.0.0.1
-#    DB_PORT=3306
-#    DB_DATABASE=sipas
-#    DB_USERNAME=root
-#    DB_PASSWORD=
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=sipas
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-# 4. Migrasi dan data contoh
+Jalankan:
+
+```
 php artisan migrate:fresh --seed
-
-# 5. Jalankan
 php artisan serve
 ```
 
-Buka http://127.0.0.1:8000
-
-| Peran | Email | Password |
-|---|---|---|
-| Admin | admin@sipas.test | password |
-| Petugas | petugas@sipas.test | password |
-
-Jalankan pengujian: `php artisan test`
+Buka http://127.0.0.1:8000. Akun demo: `admin@sipas.test` dan `petugas@sipas.test`, password `password`.
 
 ## Skenario Demo
 
