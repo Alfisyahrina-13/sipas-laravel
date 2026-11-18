@@ -108,7 +108,17 @@ Jalankan pengujian: `php artisan test`
 
 ## Screenshot
 
-(Tempel screenshot: login, dashboard, halaman SAW, CRUD, penugasan)
+### Login
+![Login](docs/login.png)
+
+### Dashboard
+![Dashboard](docs/dashboard.png)
+
+### Perhitungan SAW
+![Perhitungan SAW](docs/saw.png)
+
+### Penugasan Pengangkutan
+![Penugasan](docs/penugasan.png)
 
 ## Kesimpulan
 
