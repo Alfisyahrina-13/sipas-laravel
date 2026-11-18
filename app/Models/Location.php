@@ -15,7 +15,7 @@ class Location extends Model
 
     public function latestRecord()
     {
-        return $this->hasOne(WasteRecord::class)->latestOfMany(['tanggal_input' => 'max', 'id' => 'max']);
+        return $this->hasOne(WasteRecord::class)->ofMany(['tanggal_input' => 'max', 'id' => 'max']);
     }
 
     public function pickups()
